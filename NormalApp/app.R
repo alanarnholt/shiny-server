@@ -23,7 +23,7 @@ server <- function(input, output){
     SDB <- c(-3, -2, -1, 0, 1, 2, 3)*input$SIGMA + input$MU
     p + stat_function(fun = dnorm, args = list(input$MU, input$SIGMA)) +
       stat_function(fun = limitRange(min = input$MIN, max = input$MAX),
-                    geom = "area", fill = "purple", alpha = 0.4, n = 500) + 
+                    geom = "area", fill = "hotpink", alpha = 0.4, n = 500) + 
       theme_bw() + 
       labs(x = paste("X ~ N(", input$MU,",",input$SIGMA,")"), y = "", title = paste("The area between", input$MIN, "and", input$MAX, "is", abN)) +
       scale_x_continuous(breaks=SDB)
