@@ -1,3 +1,5 @@
+library(colourpicker)
+
 ui <- fluidPage(
   # Superhero css from http://bootswatch.com/
   theme = "bootstrap.css",
@@ -8,7 +10,7 @@ ui <- fluidPage(
       numericInput(inputId = "SIGMA", label = "Standard Deviation:", value = 1, min = 0.0000001, max = Inf),
       numericInput(inputId = "MIN", label = "Lower:", value = -2, min = -Inf, max = Inf),
       numericInput(inputId = "MAX", label = "Upper:", value = 2, min = -Inf, max = Inf),
-      textInput(inputId = "COLOR", label = "Color:", value = "hotpink"),
+      colourInput(inputId = "COLOR", label = "Color:", value = "hotpink"),
       numericInput(inputId = "ALPHA", label = "Intensity:", value = 0.4, min = 0.05, max = 1),
       downloadButton("report", "Generate report")
     ),
