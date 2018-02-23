@@ -43,7 +43,14 @@ alternative <- match.arg(alternative)
       return(y)
     }
     
-    POWER <- round(pt(qt(alpha, n - 1), n-1, gamma), 4)
+    dt_fun3 <- function(x){
+      y <- dt(x, n - 1, gamma)
+      y[x < qt(alpha, n - 1)] <- NA
+      return(y)
+    }
+    
+    POWER <- round(pt(qt(alpha, n - 1), n - 1, gamma), 4)
+    BETA <- round(1- POWER, 4)
     
     } else if (alternative == "greater" & variance == "unknown") {
     dt_fun1 <- function(x){
@@ -58,7 +65,14 @@ alternative <- match.arg(alternative)
       return(y)
     }
     
-    POWER <- round(pt(qt(1- alpha, n - 1), n-1, gamma, lower.tail = FALSE), 4)
+    dt_fun3 <- function(x){
+      y <- dt(x, n - 1, gamma)
+      y[x > qt(1 - alpha, n - 1)] <- NA
+      return(y)
+    }
+    
+    POWER <- round(pt(qt(1 - alpha, n - 1), n - 1, gamma, lower.tail = FALSE), 4)
+    BETA <- round(1- POWER, 4)
     
     } else if (alternative == "two.sided" & variance == "unknown") {
     dt_fun1 <- function(x){
@@ -69,11 +83,18 @@ alternative <- match.arg(alternative)
     
     dt_fun2 <- function(x){
       y <- dt(x, n - 1, gamma)
-      y[x > qt(alpha/2, n - 1) & x < qt(1 - alpha /2, n - 1)] <- NA
+      y[x > qt(alpha/2, n - 1) & x < qt(1 - alpha/2, n - 1)] <- NA
       return(y)
     } 
     
-    POWER <- round(pt(qt(alpha/2, n-1), n-1, gamma) + pt(qt(1- alpha/2, n - 1), n-1, gamma, lower.tail = FALSE), 4)
+    dt_fun3 <- function(x){
+      y <- dt(x, n - 1, gamma)
+      y[x > qt(1 - alpha/2, n-1) | x < qt(alpha/2, n - 1)] <- NA
+      return(y)
+    }
+    
+    POWER <- round(pt(qt(alpha/2, n - 1), n - 1, gamma) + pt(qt(1 - alpha/2, n - 1), n-1, gamma, lower.tail = FALSE), 4)
+    BETA <- round(1- POWER, 4)
   }
 
 ########### Next Normal  
@@ -90,8 +111,15 @@ alternative <- match.arg(alternative)
       y[x > qnorm(alpha, mu0, sd/sqrt(n))] <- NA
       return(y)
     }
+    
+    dnorm_fun3 <- function(x){
+      y <- dnorm(x, mu1, sd/sqrt(n))
+      y[x < qnorm(alpha, mu0, sd/sqrt(n))] <- NA
+      return(y)
+    }
 
     POWER <- round(pnorm(qnorm(alpha, mu0, sd/sqrt(n)), mu1, sd/sqrt(n)), 4)
+    BETA <- round(1- POWER, 4)
 
     } else if (alternative == "greater" & variance == "known"){
 
@@ -106,8 +134,15 @@ alternative <- match.arg(alternative)
       y[x < qnorm(1 - alpha, mu0, sd/sqrt(n))] <- NA
       return(y)
     }
+    
+    dnorm_fun3 <- function(x){
+      y <- dnorm(x, mu1, sd/sqrt(n))
+      y[x > qnorm(1 - alpha, mu0, sd/sqrt(n))] <- NA
+      return(y)
+    }
 
     POWER <- round(pnorm(qnorm(1- alpha, mu0, sd/sqrt(n)), mu1, sd/sqrt(n), lower.tail = FALSE), 4)
+    BETA <- 1- POWER
 
     } else if (alternative == "two.sided" & variance == "known") {
     dnorm_fun1 <- function(x){
@@ -118,32 +153,45 @@ alternative <- match.arg(alternative)
 
     dnorm_fun2 <- function(x){
       y <- dnorm(x, mu1, sd/sqrt(n))
-      y[x > qnorm(alpha/2, mu0, sd/sqrt(n)) & x < qnorm(1 - alpha /2, mu0, sd/sqrt(n))] <- NA
+      y[x > qnorm(alpha/2, mu0, sd/sqrt(n)) & x < qnorm(1 - alpha/2, mu0, sd/sqrt(n))] <- NA
+      return(y)
+    }
+    
+    dnorm_fun3 <- function(x){
+      y <- dnorm(x, mu1, sd/sqrt(n))
+      y[x > qnorm(1 - alpha/2, mu0, sd/sqrt(n)) | x < qnorm(alpha/2, mu0, sd/sqrt(n))] <- NA
       return(y)
     }
 
     POWER <- round(pnorm(qnorm(alpha/2, mu0, sd/sqrt(n)), mu1, sd/sqrt(n)) + pnorm(qnorm(1- alpha/2, mu0, sd/sqrt(n)), mu1, sd/sqrt(n), lower.tail = FALSE), 4)
+    BETA <- round(1- POWER, 4)
 }
 
 
 if(variance == "unknown"){
 p + stat_function(fun = dt_fun1, geom = "area", n = 500, fill = "red", alpha = 0.5) +
   stat_function(fun = dt_fun2, geom = "area", n = 500, fill = "blue", alpha = 0.5) +
+  stat_function(fun = dt_fun3, geom = "area", n = 500, fill = "green", alpha = 0.2) +
   stat_function(fun = dt, args = list(n - 1), n = 500, color = "red") +
   stat_function(fun = dt, args = list(n - 1, gamma), n = 500, color = "blue") +
   geom_hline(yintercept = 0) +
   theme_bw() +
-  labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas")) +
-  theme(plot.title = element_text(hjust = 0.5))
+  labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas"),
+       caption = paste0("Beta ","(",BETA,") is the green shaded area")) +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(plot.caption = element_text(hjust = 0.5))  
 } else {
 p + stat_function(fun = dnorm_fun1, geom = "area", n = 500, fill = "red", alpha = 0.5) +
   stat_function(fun = dnorm_fun2, geom = "area", n = 500, fill = "blue", alpha = 0.5) +
+  stat_function(fun = dnorm_fun3, geom = "area", n = 500, fill = "green", alpha = 0.2) +
   stat_function(fun = dnorm, args = list(mu0, sd/sqrt(n)), n = 500, color = "red") +
   stat_function(fun = dnorm, args = list(mu1, sd/sqrt(n)), n = 500, color = "blue") +
   geom_hline(yintercept = 0) +
   theme_bw() +
-  labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas")) +
-  theme(plot.title = element_text(hjust = 0.5))
+    labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas"),
+         caption = paste0("Beta ","(",BETA,") is the green shaded area")) +
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    theme(plot.caption = element_text(hjust = 0.5))  
 }
 }
 
@@ -181,7 +229,7 @@ ui <- fluidPage(
       numericInput(inputId = "mu0", label = "Hypothesized mean \\( \\mu_0 \\):", value = 30, min = -100000, max = 100000, step = 1),
       numericInput(inputId = "mu1", label = "True mean \\( \\mu_1  \\):", value = 31, min = -100000, max = 100000, step = 1),
       numericInput(inputId = "Sigma", label = "Population standard deviation \\((\\sigma)\\):", value = 1, min = 0.001, max = 100000, step = 1),
-      numericInput(inputId = "Alpha", label = "Significance level \\((\\alpha)\\):", value = 0.05, min = 0.001, max = 0.25, step = 0.001)
+      sliderInput(inputId = "Alpha", label = "Significance level \\((\\alpha)\\):", min = 0.001, max = 0.25, value = 0.05, step = 0.001)
     ),
     # Add a main panel around the plot and table
     mainPanel(
