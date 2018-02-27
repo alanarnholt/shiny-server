@@ -142,7 +142,7 @@ alternative <- match.arg(alternative)
     }
 
     POWER <- round(pnorm(qnorm(1- alpha, mu0, sd/sqrt(n)), mu1, sd/sqrt(n), lower.tail = FALSE), 4)
-    BETA <- 1- POWER
+    BETA <- round(1- POWER, 4)
 
     } else if (alternative == "two.sided" & variance == "known") {
     dnorm_fun1 <- function(x){
