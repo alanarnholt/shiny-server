@@ -175,7 +175,7 @@ p + stat_function(fun = dt_fun1, geom = "area", n = 1500, fill = "red", alpha = 
   stat_function(fun = dt, args = list(n - 1), n = 1500, color = "red") +
   stat_function(fun = dt, args = list(n - 1, gamma), n = 1500, color = "blue") +
   geom_hline(yintercept = 0) +
-  theme_bw() +
+  theme_bw(base_size = 16) +
   labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas"),
        caption = paste0("Beta ","(",BETA,") is the green shaded area")) +
   theme(plot.title = element_text(hjust = 0.5)) + 
@@ -187,7 +187,7 @@ p + stat_function(fun = dnorm_fun1, geom = "area", n = 1500, fill = "red", alpha
   stat_function(fun = dnorm, args = list(mu0, sd/sqrt(n)), n = 1500, color = "red") +
   stat_function(fun = dnorm, args = list(mu1, sd/sqrt(n)), n = 1500, color = "blue") +
   geom_hline(yintercept = 0) +
-  theme_bw() +
+  theme_bw(base_size = 16) +
     labs(x = "", y = "", title = paste0("Power ","(",POWER,") is the sum of all blue and purple shaded areas"),
          caption = paste0("Beta ","(",BETA,") is the green shaded area")) +
     theme(plot.title = element_text(hjust = 0.5)) + 
