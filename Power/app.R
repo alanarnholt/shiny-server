@@ -169,9 +169,9 @@ alternative <- match.arg(alternative)
 
 
 if(variance == "unknown"){
-p + stat_function(fun = dt_fun1, geom = "area", n = 1500, fill = "red", alpha = 0.7) +
-  stat_function(fun = dt_fun2, geom = "area", n = 1500, fill = "blue", alpha = 0.3) +
-  stat_function(fun = dt_fun3, geom = "area", n = 1500, fill = "green", alpha = 0.15) +
+p + stat_function(fun = dt_fun1, geom = "area", n = 1500, fill = "red", alpha = 0.95) +
+  stat_function(fun = dt_fun2, geom = "area", n = 1500, fill = "blue", alpha = 0.4) +
+  stat_function(fun = dt_fun3, geom = "area", n = 1500, fill = "green", alpha = 0.1) +
   stat_function(fun = dt, args = list(n - 1), n = 1500, color = "red") +
   stat_function(fun = dt, args = list(n - 1, gamma), n = 1500, color = "blue") +
   geom_hline(yintercept = 0) +
@@ -181,9 +181,9 @@ p + stat_function(fun = dt_fun1, geom = "area", n = 1500, fill = "red", alpha = 
   theme(plot.title = element_text(hjust = 0.5)) + 
   theme(plot.caption = element_text(hjust = 0.5))  
 } else {
-p + stat_function(fun = dnorm_fun1, geom = "area", n = 1500, fill = "red", alpha = 0.7) +
-  stat_function(fun = dnorm_fun2, geom = "area", n = 1500, fill = "blue", alpha = 0.3) +
-  stat_function(fun = dnorm_fun3, geom = "area", n = 1500, fill = "green", alpha = 0.15) +
+p + stat_function(fun = dnorm_fun1, geom = "area", n = 1500, fill = "red", alpha = 0.95) +
+  stat_function(fun = dnorm_fun2, geom = "area", n = 1500, fill = "blue", alpha = 0.4) +
+  stat_function(fun = dnorm_fun3, geom = "area", n = 1500, fill = "green", alpha = 0.1) +
   stat_function(fun = dnorm, args = list(mu0, sd/sqrt(n)), n = 1500, color = "red") +
   stat_function(fun = dnorm, args = list(mu1, sd/sqrt(n)), n = 1500, color = "blue") +
   geom_hline(yintercept = 0) +
