@@ -3,6 +3,7 @@ title: "One-Sample Power Calculator"
 output: 
   flexdashboard::flex_dashboard:
     theme: cerulean
+    #css: mycss.css
     orientation: columns
     social: menu
     source_code: embed
@@ -211,7 +212,6 @@ p + stat_function(fun = dnorm_fun1, geom = "area", n = 1500, fill = "red", alpha
 
 Column {.sidebar}
 -----------------
-
 
 ```{r}
 radioButtons(inputId = "Type", label = "Select alternative hypothesis:", 
