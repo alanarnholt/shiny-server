@@ -21,6 +21,7 @@ blockquote {
 /* navbar */
 .navbar-default {
     background-color: black;
+    color: #FFD700;
     border-color: #E7E7E7;
     border-bottom: 5px solid #FFD700;
 }

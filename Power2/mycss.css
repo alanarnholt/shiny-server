@@ -16,7 +16,7 @@ body hr {
 .navbar-inverse .navbar-nav > li > a,
 .navbar .navbar-brand {
   background-color: black;
-  border-color: #E7E7E7;
+  color: #E7E7E7;
   border-bottom: 5px solid #FFD700;
   text-decoration: none;
 }
