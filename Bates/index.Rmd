@@ -1,0 +1,72 @@
+---
+title: "Time to ditch the n > 30 rule"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: cerulean
+    orientation: columns
+    social: menu
+    source_code: embed
+runtime: shiny
+---
+
+
+
+
+```{r global, include=FALSE}
+library(shiny)
+library(ggplot2)
+gp <- function(n = 10, lambda = 1/5, alpha = 1, al = 0.01){
+  mu0 <- 1/lambda
+  tgu <- qgamma(1-al/2, n*alpha, n*lambda)
+  tgl <- qgamma(al/2, n*alpha, n*lambda)
+  tnu <- qnorm(1-al/2, alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n))
+  tnl <- qnorm(al/2, alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n))
+  nalpu <- pgamma(tnu, n*alpha, n*lambda, lower = FALSE)
+  nalpl <- pgamma(tnl, n*alpha, n*lambda, lower = TRUE)
+  poffu <- round((nalpu - al/2)/(al/2)*100, 2)
+  poffl <- round((nalpl - al/2)/(al/2)*100, 2)
+  # return(c(poffl, poffu, tgl, tgu, tnl, tnu))
+  ggplot(data = data.frame(x = c(alpha/lambda - (sqrt(alpha/lambda^2)/sqrt(n))*4.5, alpha/lambda + (sqrt(alpha/lambda^2)/sqrt(n))*4.5)), aes(x = x)) + 
+    stat_function(fun = dgamma, args = list(n*alpha, n*lambda), geom = "area", fill = "skyblue1", alpha = 1, n = 1500) +
+    stat_function(fun = dgamma, args = list(n*alpha, n*lambda), geom = "path", color = "blue", linetype = "dashed", n = 1500) +
+    stat_function(fun = dnorm, args = list(alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n)), geom = "area", fill = "tomato1", alpha = .3, n = 1500) + 
+    stat_function(fun = dnorm, args = list(alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n)), geom = "path", color = "red", linetype = "dotted", n = 1500) +
+    theme_classic() + 
+    geom_vline(xintercept = c(tgl, tgu), linetype = "dashed", color = "blue") + 
+    geom_vline(xintercept = c(tnl, tnu), linetype = "dotted", color = "black") +
+    labs(x = "", y = "", title = paste0("Lower area is ", poffl,"% different from the specified area of ", al/2, ".\n", "Upper area is ", poffu,"% different from the specified area of ", al/2,".")) + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    geom_label(data = NULL, x = tnl, y = dnorm(alpha/lambda, alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n)), label = paste("N[alpha/2]==", round(tnl,4)), parse = TRUE, fill = "tomato1", color = "black") + 
+    geom_label(data = NULL, x = tnu, y = dnorm(alpha/lambda, alpha/lambda, sqrt(alpha/lambda^2)/sqrt(n)), label = paste("N[1 - alpha/2]==", round(tnu,4)), parse = TRUE, fill = "tomato1", color = "black") +
+    geom_label(data = NULL, x = tgl, y = dgamma(alpha/lambda, n*alpha, n*lambda)*.6, label = paste("Gamma[alpha/2]==", round(tgl,4)), parse = TRUE, fill = "skyblue1", color = "black") + 
+    geom_label(data = NULL, x = tgu, y = dgamma(alpha/lambda, n*alpha, n*lambda)*.6, label = paste("Gamma[1 - alpha/2]==", round(tgu,4)), parse = TRUE, fill = "skyblue1", color = "black")
+}
+```
+
+
+Column {.sidebar}
+-----------------
+
+```{r}
+numericInput(inputId = "n", label = "Sample size (\\(n\\)):", value = 10, min = 3, max = 5000, step = 1)
+numericInput(inputId = "Lambda", label = "Exponential rate \\((\\lambda)\\):", value = 0.2, min = 0.00001, max = 100000, step = 1)
+sliderInput(inputId = "Alpha", label = "Significance level \\((\\alpha)\\):", min = 0.001, max = 0.25, value = 0.05, step = 0.001)
+```
+
+
+
+Column
+-------
+
+### 
+
+```{r}
+renderPlot({
+    gp(n = input$n,
+       lambda = input$Lambda,
+       al = input$Alpha
+      )
+  })
+```
+
+
