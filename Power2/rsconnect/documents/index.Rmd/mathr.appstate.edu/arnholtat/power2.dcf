@@ -1,0 +1,12 @@
+name: power2
+title: Power2
+username: arnholtat
+account: arnholtat
+server: mathr.appstate.edu
+hostUrl: https://mathr.appstate.edu/connect/__api__
+appId: 24
+bundleId: 64
+url: https://mathr.appstate.edu/connect/content/2a1423fb-bb6b-4e5d-b843-59ff3d8198ff/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
