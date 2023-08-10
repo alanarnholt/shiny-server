@@ -1,0 +1,12 @@
+name: bates
+title: Bates
+username: arnholtat
+account: arnholtat
+server: mathr.appstate.edu
+hostUrl: https://mathr.appstate.edu/connect/__api__
+appId: 25
+bundleId: 65
+url: https://mathr.appstate.edu/connect/content/240c8707-1ed0-4443-9284-68a0a4c36cee/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
